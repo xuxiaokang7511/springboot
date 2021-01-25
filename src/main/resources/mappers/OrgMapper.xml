@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.retire.mapper.OrgMapper">
+    <resultMap id="BaseResultMap" type="com.retire.pojo.Org">
+        <id column="org_id" jdbcType="DECIMAL" property="orgId"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="org_property" jdbcType="VARCHAR" property="orgProperty"/>
+        <result column="org_name" jdbcType="VARCHAR" property="orgName"/>
+        <result column="org_time" jdbcType="TIMESTAMP" property="orgTime"/>
+        <result column="org_month_money" jdbcType="VARCHAR" property="orgMonthMoney"/>
+        <result column="org_year_money" jdbcType="VARCHAR" property="orgYearMoney"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Short">
+    delete from ORG
+    where org_id = #{orgId,jdbcType=DECIMAL}
+  </delete>
+    <insert id="insert" parameterType="com.retire.pojo.Org">
+    insert into ORG (org_id, org_code, org_property, 
+      org_name, org_time, org_month_money, 
+      org_year_money)
+    values (#{orgId,jdbcType=DECIMAL}, #{orgCode,jdbcType=VARCHAR}, #{orgProperty,jdbcType=VARCHAR}, 
+      #{orgName,jdbcType=VARCHAR}, #{orgTime,jdbcType=TIMESTAMP}, #{orgMonthMoney,jdbcType=VARCHAR}, 
+      #{orgYearMoney,jdbcType=VARCHAR})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="com.retire.pojo.Org">
+    update ORG
+    set org_code = #{orgCode,jdbcType=VARCHAR},
+      org_property = #{orgProperty,jdbcType=VARCHAR},
+      org_name = #{orgName,jdbcType=VARCHAR},
+      org_time = #{orgTime,jdbcType=TIMESTAMP},
+      org_month_money = #{orgMonthMoney,jdbcType=VARCHAR},
+      org_year_money = #{orgYearMoney,jdbcType=VARCHAR}
+    where org_id = #{orgId,jdbcType=DECIMAL}
+  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Short" resultMap="BaseResultMap">
+    select org_id, org_code, org_property, org_name, org_time, org_month_money, org_year_money
+    from ORG
+    where org_id = #{orgId,jdbcType=DECIMAL}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select org_id, org_code, org_property, org_name, org_time, org_month_money, org_year_money
+        from ORG
+        <where>
+            <if test="tax_month !=null and tax_month !=''">
+                AND org_time 	&lt;= to_date(#{tax_month},'yyyy-MM-dd')
+            </if>
+            <if test="org_code_list!=null and org_code_list.size()>0">
+                AND  org_code in
+                <foreach collection="org_code_list" item="org_code" open="(" close=")" separator=",">
+                    #{org_code}
+                </foreach>
+            </if>
+        </where>
+    </select>
+</mapper>
